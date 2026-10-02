@@ -12,6 +12,7 @@ from utils.translations import get_crop_translation, get_disease_translation
 
 # ── Model Singletons ────────────────────────────────────────────────────────
 _disease_model = None
+_shubham_model = None
 _crop_model    = None
 _crop_scaler   = None
 
@@ -23,6 +24,16 @@ def get_disease_model():
             raise FileNotFoundError(f"Disease model not found at: {Config.DISEASE_MODEL_PATH}")
         _disease_model = tf.keras.models.load_model(Config.DISEASE_MODEL_PATH)
     return _disease_model
+
+
+def get_shubham_disease_model():
+    global _shubham_model
+    if _shubham_model is None:
+        if not os.path.exists(Config.SHUBHAM_MODEL_PATH):
+            raise FileNotFoundError(f"Crop-Disease-Detection model not found at: {Config.SHUBHAM_MODEL_PATH}")
+        # compile=False avoids legacy optimizer deserialization issues
+        _shubham_model = tf.keras.models.load_model(Config.SHUBHAM_MODEL_PATH, compile=False)
+    return _shubham_model
 
 
 def get_crop_model():
@@ -58,32 +69,48 @@ def validate_image_file(image_path: str):
         raise ValueError(f"Corrupted or invalid image file: {str(e)}")
 
 
-def predict_disease(image_path: str) -> dict:
+def predict_disease(image_path: str, engine: str = None) -> dict:
     """
     Validates, preprocesses and predicts disease from a leaf image.
+    Supports multi-engine inference:
+      - 'mobilenet': AgriAI MobileNetV2 (29 classes, fast)
+      - 'shubham': Crop-Disease-Detection AlexNet/CNN (38 classes, extended)
     Returns:
         dict: {
-            disease_name, confidence, status, top_predictions
+            disease_name, confidence, status, top_predictions, engine, engine_label
         }
     """
     validate_image_file(image_path)
-    model = get_disease_model()
 
-    # Model was trained with layers.Rescaling(1./255) as layer 0, expecting 0-255 float32 RGB
+    if not engine or engine not in Config.AVAILABLE_DISEASE_ENGINES:
+        engine = Config.DEFAULT_DISEASE_ENGINE
+
     image = tf.keras.utils.load_img(image_path, target_size=Config.DISEASE_IMG_SIZE, color_mode="rgb")
     arr = tf.keras.utils.img_to_array(image)
-    arr = np.expand_dims(arr, axis=0).astype("float32")
+
+    if engine == "shubham":
+        model = get_shubham_disease_model()
+        classes = Config.SHUBHAM_DISEASE_CLASSES
+        # Shubham model expects 0.0 - 1.0 normalized float32
+        arr = np.expand_dims(arr, axis=0).astype("float32") / 255.0
+        engine_label = Config.AVAILABLE_DISEASE_ENGINES.get("shubham", "Crop-Disease-Detection CNN (38 Classes)")
+    else:
+        model = get_disease_model()
+        classes = Config.DISEASE_CLASSES
+        # MobileNetV2 model has Rescaling(1./255) as layer 0, expecting 0-255 float32
+        arr = np.expand_dims(arr, axis=0).astype("float32")
+        engine_label = Config.AVAILABLE_DISEASE_ENGINES.get("mobilenet", "AgriAI MobileNetV2 (29 Classes)")
 
     raw_preds = model.predict(arr, verbose=0)[0]
     top_idx = int(np.argmax(raw_preds))
     confidence = round(float(raw_preds[top_idx] * 100), 2)
-    disease_name = Config.DISEASE_CLASSES[top_idx]
+    disease_name = classes[top_idx]
 
     # Calculate top 3 predictions
     top_3_indices = np.argsort(raw_preds)[-3:][::-1]
     top_3 = [
         {
-            "disease_name": Config.DISEASE_CLASSES[i],
+            "disease_name": classes[i],
             "confidence": round(float(raw_preds[i] * 100), 2)
         }
         for i in top_3_indices
@@ -95,7 +122,9 @@ def predict_disease(image_path: str) -> dict:
         "disease_name": disease_name,
         "confidence": confidence,
         "status": status,
-        "top_predictions": top_3
+        "top_predictions": top_3,
+        "engine": engine,
+        "engine_label": engine_label
     }
 
 

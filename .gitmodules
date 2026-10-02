@@ -1,0 +1,3 @@
+[submodule "Crop-Disease-Detection"]
+	path = Crop-Disease-Detection
+	url = https://github.com/Shubham-Jain-09/Crop-Disease-Detection.git

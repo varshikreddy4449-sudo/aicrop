@@ -121,7 +121,71 @@ STRINGS = {
         "err_invalid_file": "Please upload a valid image file (PNG, JPG, JPEG, WEBP).",
         "err_too_large": "File size exceeds the 5MB limit. Please upload a smaller image.",
         "err_prediction_failed": "Prediction failed. Please ensure the image is clear and try again.",
-        "err_input_missing": "Please fill out all required soil and weather parameters."
+        "err_input_missing": "Please fill out all required soil and weather parameters.",
+
+        # Index page – feature cards & metrics
+        "badge_crops_supported": "22 Crops Supported",
+        "badge_disease_classes": "29 Disease Classes",
+        "crop_card_desc": "Trained on verified soil and climatic parameters. Enter your Nitrogen, Phosphorus, Potassium levels, along with temperature, humidity, pH, and precipitation to receive the optimal crop choice with genuine model probability.",
+        "disease_card_desc": "Leveraging a MobileNetV2 convolutional neural network. Simply snap or drag-and-drop a leaf photograph to instantly diagnose disease pathology, biological causes, symptoms, and organic & chemical treatments.",
+        "badge_npk": "🧪 N-P-K Analysis",
+        "badge_weather": "🌦️ Weather Integration",
+        "badge_rf": "🌲 Random Forest ML",
+        "badge_voice": "🔊 Multi-Language Voice",
+        "badge_upload": "📸 Drag & Drop Upload",
+        "badge_ai": "⚡ Instant AI Inference",
+        "badge_organic": "🌿 Organic & Chemical Control",
+        "badge_audio_lang": "🔊 EN / हिंदी / తెలుగు Audio",
+        "metric_crop_varieties": "Crop Varieties Evaluated",
+        "metric_diseases": "Plant & Leaf Diseases",
+        "metric_accuracy": "Crop Model Benchmark Accuracy",
+        "metric_languages": "Languages (EN / HI / TE)",
+
+        # Crop page
+        "crop_subtitle": "Provide your soil test results and local meteorological data.",
+        "badge_rf_model": "Random Forest (100 Trees)",
+        "quick_presets": "⚡ Quick Presets:",
+        "preset_rice": "🌾 Rice",
+        "preset_maize": "🌽 Maize",
+        "preset_chickpea": "🧆 Chickpea",
+        "preset_cotton": "👕 Cotton",
+        "preset_coffee": "☕ Coffee",
+        "preset_apple": "🍎 Apple",
+        "section_soil_nutrients": "🧪 Soil Macronutrients (kg/ha)",
+        "section_weather_soil": "🌦️ Weather & Soil Conditions",
+        "badge_ai_recommendation": "✓ AI Recommendation",
+        "label_model_output": "Model Output:",
+        "label_opt_temperature": "🌡️ Optimal Temperature",
+        "label_opt_humidity": "💧 Optimal Humidity",
+        "label_ideal_ph": "🧪 Ideal Soil pH",
+        "label_annual_rainfall": "🌧️ Annual Rainfall",
+
+        # Disease page
+        "disease_subtitle": "Upload a clear leaf photo for deep-learning plant disease diagnosis.",
+        "badge_mobilenet": "MobileNetV2 Deep Learning",
+        "btn_browse": "📁 Browse Device Photo",
+        "engine_select_label": "🧠 Select AI Diagnosis Model Engine",
+        "engine_select_hint": "Choose between AgriAI MobileNetV2 (29 classes, fast) or Crop-Disease-Detection CNN (38 classes, extended).",
+        "alt_diagnoses_label": "Alternative Diagnostic Possibilities:",
+        "label_model_tag": "Model Tag:",
+        "label_plant": "Plant:",
+
+        # Dashboard
+        "dashboard_subtitle": "Here is your agricultural AI diagnostic and recommendation summary.",
+
+        # History page
+        "history_subtitle": "Complete historical logs of your crop recommendations and leaf disease diagnoses.",
+        "table_n": "N",
+        "table_p": "P",
+        "table_k": "K",
+        "table_temp": "Temp (°C)",
+        "table_humidity_col": "Humidity (%)",
+        "table_ph": "pH",
+        "table_rain": "Rain (mm)",
+        "table_audio": "Audio",
+
+        # Footer
+        "footer_tech": "Powered by MobileNetV2 Deep Learning & Random Forest Classifier | Flask • MongoDB • Scikit-learn"
     },
     
     "hi": {
@@ -231,7 +295,71 @@ STRINGS = {
         "err_invalid_file": "कृपया एक मान्य छवि फ़ाइल (PNG, JPG, JPEG, WEBP) अपलोड करें।",
         "err_too_large": "फ़ाइल का आकार 5MB की सीमा से अधिक है। कृपया छोटी फ़ाइल चुनें।",
         "err_prediction_failed": "भविष्यवाणी विफल रही। कृपया साफ छवि अपलोड करें और पुनः प्रयास करें।",
-        "err_input_missing": "कृपया मिट्टी और मौसम के सभी आवश्यक पैरामीटर भरें।"
+        "err_input_missing": "कृपया मिट्टी और मौसम के सभी आवश्यक पैरामीटर भरें।",
+
+        # Index page – feature cards & metrics
+        "badge_crops_supported": "22 फसलें समर्थित",
+        "badge_disease_classes": "29 रोग श्रेणियाँ",
+        "crop_card_desc": "सत्यापित मिट्टी और जलवायु मापदंडों पर प्रशिक्षित। नाइट्रोजन, फास्फोरस, पोटाशियम, तापमान, आर्द्रता, pH और वर्षा दर्ज करें और सटीक फसल अनुशंसा प्राप्त करें।",
+        "disease_card_desc": "MobileNetV2 कन्वोल्यूशनल न्यूरल नेटवर्क का उपयोग करते हुए — पत्ती की फोटो खींचें या अपलोड करें और तुरंत रोग, कारण, लक्षण, और जैविक व रासायनिक उपचार जानें।",
+        "badge_npk": "🧪 N-P-K विश्लेषण",
+        "badge_weather": "🌦️ मौसम एकीकरण",
+        "badge_rf": "🌲 रैंडम फॉरेस्ट ML",
+        "badge_voice": "🔊 बहुभाषी वॉइस",
+        "badge_upload": "📸 ड्रैग & ड्रॉप अपलोड",
+        "badge_ai": "⚡ तत्काल AI अनुमान",
+        "badge_organic": "🌿 जैविक व रासायनिक नियंत्रण",
+        "badge_audio_lang": "🔊 अंग्रेज़ी / हिंदी / తెలుగు ऑडियो",
+        "metric_crop_varieties": "फसल किस्में मूल्यांकित",
+        "metric_diseases": "पौध व पत्ती रोग",
+        "metric_accuracy": "फसल मॉडल बेंचमार्क सटीकता",
+        "metric_languages": "भाषाएँ (अंग्रेज़ी / हिंदी / तेलुगु)",
+
+        # Crop page
+        "crop_subtitle": "अपनी मिट्टी जाँच रिपोर्ट और स्थानीय मौसम डेटा प्रदान करें।",
+        "badge_rf_model": "रैंडम फॉरेस्ट (100 पेड़)",
+        "quick_presets": "⚡ त्वरित प्रीसेट:",
+        "preset_rice": "🌾 चावल",
+        "preset_maize": "🌽 मक्का",
+        "preset_chickpea": "🧆 चना",
+        "preset_cotton": "👕 कपास",
+        "preset_coffee": "☕ कॉफ़ी",
+        "preset_apple": "🍎 सेब",
+        "section_soil_nutrients": "🧪 मिट्टी के मुख्य पोषक तत्व (किग्रा/हेक्टेयर)",
+        "section_weather_soil": "🌦️ मौसम एवं मिट्टी की स्थिति",
+        "badge_ai_recommendation": "✓ AI अनुशंसा",
+        "label_model_output": "मॉडल परिणाम:",
+        "label_opt_temperature": "🌡️ अनुकूल तापमान",
+        "label_opt_humidity": "💧 अनुकूल आर्द्रता",
+        "label_ideal_ph": "🧪 आदर्श मिट्टी pH",
+        "label_annual_rainfall": "🌧️ वार्षिक वर्षा",
+
+        # Disease page
+        "disease_subtitle": "गहरी-शिक्षण पौध रोग निदान के लिए स्पष्ट पत्ती फोटो अपलोड करें।",
+        "badge_mobilenet": "MobileNetV2 डीप लर्निंग",
+        "btn_browse": "📁 डिवाइस से फोटो चुनें",
+        "engine_select_label": "🧠 AI निदान मॉडल इंजन चुनें",
+        "engine_select_hint": "AgriAI MobileNetV2 (29 श्रेणियाँ, तेज़) या Crop-Disease-Detection CNN (38 श्रेणियाँ, विस्तारित) में से चुनें।",
+        "alt_diagnoses_label": "वैकल्पिक निदान संभावनाएं:",
+        "label_model_tag": "मॉडल टैग:",
+        "label_plant": "पौधा:",
+
+        # Dashboard
+        "dashboard_subtitle": "यहाँ आपकी कृषि AI निदान और अनुशंसा का सारांश है।",
+
+        # History page
+        "history_subtitle": "आपकी फसल अनुशंसाओं और पत्ती रोग निदान का पूर्ण ऐतिहासिक लॉग।",
+        "table_n": "नाइट्रोजन (N)",
+        "table_p": "फास्फोरस (P)",
+        "table_k": "पोटेशियम (K)",
+        "table_temp": "तापमान (°C)",
+        "table_humidity_col": "आर्द्रता (%)",
+        "table_ph": "pH",
+        "table_rain": "वर्षा (मिमी)",
+        "table_audio": "ऑडियो",
+
+        # Footer
+        "footer_tech": "MobileNetV2 डीप लर्निंग और रैंडम फॉरेस्ट क्लासिफायर द्वारा संचालित | Flask • MongoDB • Scikit-learn"
     },
     
     "te": {
@@ -1387,6 +1515,294 @@ DISEASES_I18N = {
             "treatment": "వైరస్ నివారణకు మందులు లేవు. తెల్లదోమ నివారణకు ఇమిడాక్లోప్రిడ్ పిచికారీ చేయాలి.",
             "organic": "పసుపు జిగురు అట్టలను ఏర్పాటు చేయాలి; వేప నూనెను పిచికారీ చేయాలి; తెగులు సోకిన మొక్కలను పీకివేయాలి.",
             "prevention": "తెగులును తట్టుకునే రకాలను నాటాలి; నర్సరీ దశలో రక్షణ వలలను వాడాలి."
+        }
+    },
+    "Blueberry - Healthy": {
+        "en": {
+            "name": "Blueberry - Healthy",
+            "crop": "Blueberry",
+            "status": "Healthy",
+            "cause": "No pathogen detected. The foliage shows normal physiological condition.",
+            "symptoms": "Vibrant foliage, robust shoots, normal leaf turgor and color.",
+            "treatment": "No treatment required. Maintain acidic soil (pH 4.5-5.5) and adequate pine bark or peat mulch.",
+            "organic": "Compost with ericaceous mulch, rainwater irrigation.",
+            "prevention": "Annual pruning of oldest stems and consistent soil moisture."
+        },
+        "hi": {
+            "name": "ब्लूबेरी - स्वस्थ (Healthy)",
+            "crop": "ब्लूबेरी",
+            "status": "स्वस्थ",
+            "cause": "पौधा पूरी तरह स्वस्थ है।",
+            "symptoms": "चमकदार हरी पत्तियां और मजबूत विकास।",
+            "treatment": "किसी उपचार की आवश्यकता नहीं है। मिट्टी का pH 4.5-5.5 बनाए रखें।",
+            "organic": "अम्लीय कम्पोस्ट और पाइन छाल का उपयोग करें।",
+            "prevention": "नियमित छंटाई और उचित नमी बनाए रखें।"
+        },
+        "te": {
+            "name": "బ్లూబెర్రీ - ఆరోగ్యకరమైనది",
+            "crop": "బ్లూబెర్రీ",
+            "status": "ఆరోగ్యంగా ఉంది",
+            "cause": "మొక్క ఆరోగ్యంగా ఉంది, ఎలాంటి తెగులు లేదు.",
+            "symptoms": "ఆకులు పచ్చగా, బలంగా ఉన్నాయి.",
+            "treatment": "చికిత్స అవసరం లేదు. నేల pH 4.5-5.5 ఉండేలా చూసుకోవాలి.",
+            "organic": "సేంద్రియ ఎరువులు మరియు తగినంత తేమ అందించాలి.",
+            "prevention": "ఎండిన కొమ్మలను తొలగించి క్రమబద్ధమైన నీటిపారుదల చేయాలి."
+        }
+    },
+    "Orange - Huanglongbing (Citrus Greening)": {
+        "en": {
+            "name": "Orange - Huanglongbing (Citrus Greening)",
+            "crop": "Orange",
+            "status": "Diseased",
+            "cause": "Bacterium Candidatus Liberibacter asiaticus, vectored by Asian citrus psyllid (Diaphorina citri).",
+            "symptoms": "Blotchy mottle yellowing across leaf veins, small lopsided bitter fruits remaining green at base, twig dieback.",
+            "treatment": "No cure once infected. Aggressively manage psyllid vectors using Thiamethoxam or Imidacloprid.",
+            "organic": "Remove and destroy infected trees immediately; spray horticultural mineral oils; release Tamarixia radiata parasitoid wasps.",
+            "prevention": "Plant certified disease-free nursery stock and establish protective windbreaks."
+        },
+        "hi": {
+            "name": "संतरा - सिट्रस ग्रीनिंग (Huanglongbing)",
+            "crop": "संतरा",
+            "status": "रोगग्रस्त",
+            "cause": "कैंडिडेटस लिबेरीबैक्टर जीवाणु। यह एशियाई सिट्रस सिलिड कीट द्वारा फैलता है।",
+            "symptoms": "पत्तियों की नसों पर असमान पीलापन, फल छोटे और कड़वे रहना, टहनियां सूखना।",
+            "treatment": "बीमारी का कोई सीधा इलाज नहीं है। वाहक सिलिड कीट को नियंत्रित करने के लिए थियामेथोक्सम का छिड़काव करें।",
+            "organic": "संक्रमित पेड़ों को काटकर जलाएं; नीम तेल व मिनरल ऑयल स्प्रे करें।",
+            "prevention": "प्रमाणित रोगमुक्त पौधे लगाएं और नियमित निगरानी करें।"
+        },
+        "te": {
+            "name": "నారింజ - సిట్రస్ గ్రీనింగ్ తెగులు",
+            "crop": "నారింజ",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "సిట్రస్ సిల్లిడ్ అనే కీటం ద్వారా వ్యాపించే బ్యాక్టీరియా తెగులు.",
+            "symptoms": "ఆకుల ఈనెల మధ్య పసుపు పచ్చని మచ్చలు, కాయలు వంకరగా మారి చేదుగా ఉండడం.",
+            "treatment": "ఈ తెగులుకు నివారణ లేదు. సిల్లిడ్ కీటకాల నివారణకు థయామెథోక్సామ్ పిచికారీ చేయాలి.",
+            "organic": "బాధిత చెట్లను తీసివేసి నాశనం చేయాలి; వేప నూనె వాడాలి.",
+            "prevention": "ధృవీకరించబడిన ఆరోగ్యకరమైన మొక్కలను మాత్రమే నాటాలి."
+        }
+    },
+    "Raspberry - Healthy": {
+        "en": {
+            "name": "Raspberry - Healthy",
+            "crop": "Raspberry",
+            "status": "Healthy",
+            "cause": "No pathogen detected. Vigorous vegetative growth.",
+            "symptoms": "Deep green leaves, strong cane development, no cane lesions or leaf discoloration.",
+            "treatment": "No treatment needed. Maintain trellis support and balanced watering.",
+            "organic": "Apply composted wood chips, ensure good air circulation.",
+            "prevention": "Prune floricanes after harvest."
+        },
+        "hi": {
+            "name": "रास्पबेरी - स्वस्थ (Healthy)",
+            "crop": "रास्पबेरी",
+            "status": "स्वस्थ",
+            "cause": "पौधा पूरी तरह स्वस्थ है।",
+            "symptoms": "गहरी हरी पत्तियां और मजबूत शाखाएं।",
+            "treatment": "किसी उपचार की आवश्यकता नहीं है।",
+            "organic": "उचित कम्पोस्ट और मल्चिंग करें।",
+            "prevention": "फसल के बाद पुरानी टहनियों की छंटाई करें।"
+        },
+        "te": {
+            "name": "రాస్ప్బెర్రీ - ఆరోగ్యకరమైనది",
+            "crop": "రాస్ప్బెర్రీ",
+            "status": "ఆరోగ్యంగా ఉంది",
+            "cause": "ఎలాంటి తెగులు సోకలేదు.",
+            "symptoms": "పచ్చని ఆరోగ్యవంతమైన ఆకులు మరియు కాండం.",
+            "treatment": "చికిత్స అవసరం లేదు.",
+            "organic": "సేంద్రియ ఎరువులు వేయాలి.",
+            "prevention": "పాత కొమ్మలను తొలగించాలి."
+        }
+    },
+    "Soybean - Healthy": {
+        "en": {
+            "name": "Soybean - Healthy",
+            "crop": "Soybean",
+            "status": "Healthy",
+            "cause": "No pathogen detected. Crop is thriving.",
+            "symptoms": "Uniform trifoliate foliage, vigorous growth, healthy nodulation.",
+            "treatment": "No treatment needed.",
+            "organic": "Rhizobium biofertilizer inoculation.",
+            "prevention": "Rotate with corn or grasses."
+        },
+        "hi": {
+            "name": "सोयाबीन - स्वस्थ (Healthy)",
+            "crop": "सोयाबीन",
+            "status": "स्वस्थ",
+            "cause": "फसल पूर्णतः स्वस्थ है।",
+            "symptoms": "समान हरी पत्तियां और स्वस्थ विकास।",
+            "treatment": "उपचार की आवश्यकता नहीं।",
+            "organic": "राइजोबियम कल्चर का उपयोग करें।",
+            "prevention": "मक्का या ज्वार के साथ फसल चक्र अपनाएं।"
+        },
+        "te": {
+            "name": "సోయాబీన్ - ఆరోగ్యకరమైనది",
+            "crop": "సోయాబీన్",
+            "status": "ఆరోగ్యంగా ఉంది",
+            "cause": "మొక్క ఆరోగ్యంగా ఉంది.",
+            "symptoms": "ఆకులు ఆరోగ్యంగా, పచ్చగా ఉన్నాయి.",
+            "treatment": "చికిత్స అవసరం లేదు.",
+            "organic": "రైజోబియం వాడాలి.",
+            "prevention": "పంట మార్పిడి పాటించాలి."
+        }
+    },
+    "Squash - Powdery Mildew": {
+        "en": {
+            "name": "Squash - Powdery Mildew",
+            "crop": "Squash",
+            "status": "Diseased",
+            "cause": "Fungus Podosphaera xanthii. Flourishes in warm, dry weather with dense canopy shading.",
+            "symptoms": "White talcum-powder-like fungal patches on upper and lower leaf surfaces, leading to yellowing and premature drying.",
+            "treatment": "Apply Azoxystrobin, Triflumizole, or Myclobutanil at first sign of white spots.",
+            "organic": "Spray potassium bicarbonate (3g/L), diluted milk spray (40% milk, 60% water), or neem oil.",
+            "prevention": "Choose resistant squash varieties and increase plant spacing for airflow."
+        },
+        "hi": {
+            "name": "कद्दू/लौकी - चूर्णी फफूंद (Powdery Mildew)",
+            "crop": "कद्दू/लौकी",
+            "status": "रोगग्रस्त",
+            "cause": "पोडोस्फेरा जैन्थी फफूंद। गर्म और शुष्क मौसम में तेजी से पनपता है।",
+            "symptoms": "पत्तियों पर सफेद पाउडर जैसे धब्बे, पत्तियां पीली पड़कर सूखना।",
+            "treatment": "एज़ोक्सीस्ट्रोबिन (Azoxystrobin) या माइक्लोबुटानिल का छिड़काव करें।",
+            "organic": "पोटेशियम बाइकार्बोनेट या नीम के तेल (3%) का स्प्रे करें।",
+            "prevention": "पौधों के बीच पर्याप्त दूरी रखें ताकि धूप और हवा मिले।"
+        },
+        "te": {
+            "name": "గుమ్మడి/దోస - బూడిద తెగులు (Powdery Mildew)",
+            "crop": "గుమ్మడి",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "పోడోస్ఫెరా జాంతి శిలీంధ్రం వల్ల వస్తుంది.",
+            "symptoms": "ఆకులపై బూడిద వంటి తెల్లని పొర ఏర్పడి ఆకులు ఎండిపోతాయి.",
+            "treatment": "అజోక్సిస్ట్రోబిన్ లేదా మైక్లోబ్యుటానిల్ పిచికారీ చేయాలి.",
+            "organic": "పొటాషియం బైకార్బోనేట్ లేదా వేప నూనె పిచికారీ చేయాలి.",
+            "prevention": "మొక్కల మధ్య తగినంత గాలి వెలుతురు ఉండేలా నాటాలి."
+        }
+    },
+    "Tomato - Leaf Mold": {
+        "en": {
+            "name": "Tomato - Leaf Mold",
+            "crop": "Tomato",
+            "status": "Diseased",
+            "cause": "Fungus Passalora fulva (Cladosporium fulvum). Highly prevalent in high-humidity (>85%) greenhouse conditions.",
+            "symptoms": "Pale green to yellowish spots on upper leaf surfaces, with olive-green to grayish velvety mold on the undersides.",
+            "treatment": "Apply Chlorothalonil, Mancozeb, or Copper sulfate at early symptoms.",
+            "organic": "Spray biofungicides containing Bacillus amyloliquefaciens; drastically improve greenhouse ventilation.",
+            "prevention": "Maintain relative humidity below 80% and avoid overhead watering."
+        },
+        "hi": {
+            "name": "टमाटर - पत्ती का फफूंद (Leaf Mold)",
+            "crop": "टमाटर",
+            "status": "रोगग्रस्त",
+            "cause": "क्लैडोस्पोरियम फफूंद। अत्यधिक नमी (>85%) और पॉलीहाउस में तेजी से फैलता है।",
+            "symptoms": "पत्तियों की ऊपरी सतह पर पीले धब्बे और निचली सतह पर जैतून जैसा मखमली फफूंद।",
+            "treatment": "क्लोरोथैलोनिल या मैंकोजेब का छिड़काव करें।",
+            "organic": "ग्रीनहाउस में वेंटिलेशन बढ़ाएं; कॉपर कवकनाशी स्प्रे करें।",
+            "prevention": "नमी 80% से कम रखें और ड्रिप सिंचाई का उपयोग करें।"
+        },
+        "te": {
+            "name": "టమోటా - ఆకు బూజు తెగులు (Leaf Mold)",
+            "crop": "టమోటా",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "పాసలోరా ఫుల్వా శిలీంధ్రం వల్ల వస్తుంది. అధిక తేమ ఉన్నప్పుడు వ్యాపిస్తుంది.",
+            "symptoms": "ఆకుల పైభాగంలో పసుపు మచ్చలు, అడుగు భాగంలో ఆలివ్ ఆకుపచ్చ రంగు బూజు.",
+            "treatment": "క్లోరోథలోనిల్ లేదా మాంకోజెబ్ మందును పిచికారీ చేయాలి.",
+            "organic": "గాలి వెలుతురు పెంచాలి; కాపర్ పిచికారీ చేయాలి.",
+            "prevention": "పంటలో అధిక తేమ లేకుండా చూసుకోవాలి."
+        }
+    },
+    "Tomato - Spider Mites (Two-spotted spider mite)": {
+        "en": {
+            "name": "Tomato - Spider Mites (Two-spotted spider mite)",
+            "crop": "Tomato",
+            "status": "Diseased",
+            "cause": "Tetranychus urticae (Arachnid mite pest). Proliferates rapidly under hot, dry, dusty conditions.",
+            "symptoms": "Fine yellow-white stippling on leaf surfaces, bronzing and drying of leaves, and visible fine webbing covering shoots.",
+            "treatment": "Apply acaricides/miticides such as Abamectin, Bifenazate, or Spiromesifen.",
+            "organic": "Spray insecticidal soap, rosemary oil, or neem oil; introduce predatory mites (Phytoseiulus persimilis).",
+            "prevention": "Keep soil adequately watered; wash dust off field foliage regularly."
+        },
+        "hi": {
+            "name": "टमाटर - लाल मकड़ी (Spider Mites)",
+            "crop": "टमाटर",
+            "status": "रोगग्रस्त",
+            "cause": "टेट्रानिचस अर्टिके (Spider Mite)। गर्म, शुष्क और धूल भरे मौसम में तेजी से बढ़ता है।",
+            "symptoms": "पत्तियों पर पीले-सफेद बारीक बिंदु (Stippling), पत्तियों पर बारीक जाले और पत्तियों का सूखना।",
+            "treatment": "एबामेक्टिन (Abamectin) या स्पाइरोमेसिफेन माइटिसाइड का छिड़काव करें।",
+            "organic": "नीम का तेल (5 मिली/लीटर) या साबुन के घोल का छिड़काव करें।",
+            "prevention": "खेत को नम रखें और धूल जमा न होने दें।"
+        },
+        "te": {
+            "name": "టమోటా - నల్లి/సాలీడు పురుగు (Spider Mites)",
+            "crop": "టమోటా",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "ఎర్ర నల్లి లేదా సాలీడు పురుగు ఆకుల రసాన్ని పీల్చడం వల్ల వస్తుంది.",
+            "symptoms": "ఆకులపై చిన్న చిన్న పసుపు రంగు చుక్కలు, ఆకుల అడుగున సన్నని తెల్లని బూజు/జాలాలు.",
+            "treatment": "అబామెక్టిన్ లేదా స్పైరోమెసిఫెన్ పిచికారీ చేయాలి.",
+            "organic": "వేప నూనె లేదా సబ్బు ద్రావణం పిచికారీ చేయాలి.",
+            "prevention": "పొలంలో దుమ్ము లేకుండా మరియు తగినంత తేమ ఉంచాలి."
+        }
+    },
+    "Tomato - Target Spot": {
+        "en": {
+            "name": "Tomato - Target Spot",
+            "crop": "Tomato",
+            "status": "Diseased",
+            "cause": "Fungus Corynespora cassiicola. Thrives in warm, humid tropical and subtropical climates.",
+            "symptoms": "Small pinpoint brown spots on foliage enlarging into concentric circular lesions resembling a bullseye/target.",
+            "treatment": "Apply Azoxystrobin + Difenoconazole or Boscalid + Pyraclostrobin.",
+            "organic": "Spray copper hydroxide or Bacillus subtilis bio-fungicide; remove lower infected leaves.",
+            "prevention": "Maintain wide row spacing to promote canopy drying; avoid overhead irrigation."
+        },
+        "hi": {
+            "name": "टमाटर - टारगेट स्पॉट (Target Spot)",
+            "crop": "टमाटर",
+            "status": "रोगग्रस्त",
+            "cause": "कोरीनेस्पोरा कैसीकोला फफूंद। गर्म और अत्यधिक आर्द्र मौसम में फैलता है।",
+            "symptoms": "पत्तियों पर लक्ष्य (Bullseye/Target) जैसे गोल चक्राकार भूरे धब्बे, पत्तियां गिरना।",
+            "treatment": "एज़ोक्सीस्ट्रोबिन या पाइराक्लोस्ट्रोबिन कवकनाशी का छिड़काव करें।",
+            "organic": "कॉपर हाइड्रोक्साइड या बैसिलस सबटिलिस का छिड़काव करें; निचली रोगग्रस्त पत्तियों को हटाएं।",
+            "prevention": "पौधों के बीच दूरी रखें और टपक सिंचाई करें।"
+        },
+        "te": {
+            "name": "టమోటా - టార్గెట్ స్పాట్ (లక్ష్యపు మచ్చ తెగులు)",
+            "crop": "టమోటా",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "కోరినెస్‌స్పోరా కాసికోలా శిలీంధ్రం వల్ల వస్తుంది.",
+            "symptoms": "ఆకులపై చక్రాల వంటి గుండ్రని ముదురు గోధుమ రంగు మచ్చలు (టార్గెట్ బోర్డు వలె).",
+            "treatment": "అజోక్సిస్ట్రోబిన్ లేదా మాంకోజెబ్ పిచికారీ చేయాలి.",
+            "organic": "కాపర్ హైడ్రాక్సైడ్ స్ప్రే చేయాలి.",
+            "prevention": "పైనుండి నీరు పోయకుండా డ్రిప్ పద్ధతి వాడాలి."
+        }
+    },
+    "Tomato - Tomato Mosaic Virus": {
+        "en": {
+            "name": "Tomato - Tomato Mosaic Virus",
+            "crop": "Tomato",
+            "status": "Diseased",
+            "cause": "Tobamovirus (ToMV). Extremely stable mechanically transmitted virus via hands, tools, and infected seeds.",
+            "symptoms": "Mottling with alternating light green and dark green mosaic patterns on foliage, distorted 'shoestring' leaves.",
+            "treatment": "No cure for viral disease. Disinfect all tools with 20% nonfat dry milk or 10% trisodium phosphate (TSP).",
+            "organic": "Immediately rogue and burn infected plants; wash hands thoroughly before touching healthy plants.",
+            "prevention": "Use certified virus-free seed; avoid tobacco use near plants; plant resistant hybrid varieties."
+        },
+        "hi": {
+            "name": "टमाटर - मोजेक वायरस (Tomato Mosaic Virus)",
+            "crop": "टमाटर",
+            "status": "रोगग्रस्त",
+            "cause": "टोबामोवायरस (ToMV)। यह हाथों, औजारों और संक्रमित बीजों के माध्यम से आसानी से फैलता है।",
+            "symptoms": "पत्तियों पर हल्के और गहरे हरे रंग के मोजेक जैसे धब्बे, पत्तियां विकृत होना।",
+            "treatment": "वायरस का कोई इलाज नहीं है। औजारों को ट्राइसोडियम फॉस्फेट या दूध के घोल से साफ करें।",
+            "organic": "संक्रमित पौधों को उखाड़कर तुरंत नष्ट करें; हाथों को साबुन से धोएं।",
+            "prevention": "रोग-प्रतिरोधी बीज लगाएं; तंबाकू का उपयोग करने वालों को पौधों को छूने न दें।"
+        },
+        "te": {
+            "name": "టమోటా - మొజాయిక్ వైరస్ తెగులు",
+            "crop": "టమోటా",
+            "status": "తెగులు బారిన పడింది",
+            "cause": "టోబామోవైరస్ వల్ల వస్తుంది. తాకడం, పనిముట్లు మరియు విత్తనాల ద్వారా వ్యాపిస్తుంది.",
+            "symptoms": "ఆకులపై లేత మరియు ముదురు ఆకుపచ్చని చారల మచ్చలు, ఆకులు సన్నగా ముడుచుకుపోవడం.",
+            "treatment": "చికిత్స లేదు. పనిముట్లను క్రిమిసంహారక ద్రావణంతో కడగాలి.",
+            "organic": "తెగులు సోకిన మొక్కలను తీసివేసి తగులబెట్టాలి.",
+            "prevention": "వైరస్ లేని విత్తనాలను వాడాలి మరియు తోటలో ధూమపానం చేయకూడదు."
         }
     }
 }
