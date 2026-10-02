@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Disease Detection - AgriAI{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Plant Disease Detection</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('disease.predict_disease_route') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Upload Leaf Image</label>
+                        <input type="file" name="leaf_image" class="form-control" accept=".png,.jpg,.jpeg" required>
+                        <small class="form-text text-muted">Upload a clear image of the leaf for accurate detection</small>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Detect Disease</button>
+                </form>
+
+                {% if result %}
+                <div class="mt-4">
+                    <div class="text-center mb-3">
+                        <img src="{{ url_for('uploaded_file', filename=result.image_filename) }}" class="preview-img" alt="Uploaded leaf" style="max-width: 100%; border-radius: 8px;">
+                    </div>
+                    
+                    <!-- Status Indicator -->
+                    {% if "Healthy" in result.disease_name %}
+                    <div class="alert alert-success mt-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Leaf Status: <strong>HEALTHY ✓</strong></h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger mt-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Leaf Status: <strong>DISEASED ⚠</strong></h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Detection Details -->
+                    <div class="card border-secondary mt-3">
+                        <div class="card-body">
+                            <p class="mb-2"><strong>Disease Detected:</strong> <span class="badge bg-primary">{{ result.disease_name }}</span></p>
+                            <p class="mb-3"><strong>Confidence Level:</strong> 
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar {% if result.confidence >= 80 %}bg-success{% elif result.confidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ result.confidence }}%;" 
+                                         aria-valuenow="{{ result.confidence }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        {{ result.confidence }}%
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Cause & Solution -->
+                    <div class="card border-info mt-3">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">📋 Cause & Recommended Solution</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3"><strong>What Causes This:</strong></p>
+                            <div class="ps-3 border-start border-4 border-info mb-3">
+                                {{ result.cause }}
+                            </div>
+                            
+                            <p class="mb-3"><strong>Recommended Action:</strong></p>
+                            <div class="ps-3 border-start border-4 border-success">
+                                {{ result.solution }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .preview-img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .progress {
+        background-color: #e9ecef;
+    }
+</style>
+{% endblock %}
