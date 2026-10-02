@@ -1,39 +1,50 @@
-import tensorflow as tf
-import numpy as np
+"""
+predict.py
+Standalone test script to run leaf disease prediction on any image.
+Usage: python predict.py [optional_image_path]
+"""
 import os
+import sys
+from config import Config
+from utils.model_loader import predict_disease
+from utils.translations import get_disease_translation
 
-# Load model
-model = tf.keras.models.load_model("model/crop_disease_model.h5")
+def main():
+    # Default to first image in uploads or prompt user
+    img_path = None
+    if len(sys.argv) > 1:
+        img_path = sys.argv[1]
+    else:
+        upload_files = [f for f in os.listdir(Config.UPLOAD_FOLDER) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))]
+        if upload_files:
+            img_path = os.path.join(Config.UPLOAD_FOLDER, upload_files[0])
+            print(f"Using default sample image: {img_path}")
+        else:
+            print("No test image provided and no files found in uploads.")
+            return
 
-IMG_SIZE = (224, 224)
+    print("==========================================")
+    print("AGRIAI LEAF DISEASE PREDICTION TEST")
+    print("==========================================")
+    print(f"Target Image: {img_path}")
+    
+    try:
+        result = predict_disease(img_path)
+        pathology = get_disease_translation(result['disease_name'], 'en')
+        print(f"\nStatus:      {result['status']}")
+        print(f"Disease:     {result['disease_name']}")
+        print(f"Confidence:  {result['confidence']}%")
+        print(f"Cause:       {pathology.get('cause', 'N/A')}")
+        print(f"Treatment:   {pathology.get('treatment', 'N/A')}")
+        print(f"Organic:     {pathology.get('organic', 'N/A')}")
+        print(f"Prevention:  {pathology.get('prevention', 'N/A')}")
+        print("\nTop 3 Predictions:")
+        for i, p in enumerate(result['top_predictions'], 1):
+            print(f"  {i}. {p['disease_name']} ({p['confidence']}%)")
+    except Exception as e:
+        print(f"Prediction failed: {e}")
 
-# Test image path
-img_path = r"dataset\Test\Tomato - Healthy\085cbe78-1d5c-45eb-877f-f409526032d5___GH_HL Leaf 469.JPG"
+    print("==========================================")
 
-# Load image
-img = tf.keras.utils.load_img(img_path, target_size=IMG_SIZE)
-
-# Convert to array
-img_array = tf.keras.utils.img_to_array(img)
-
-# Add batch dimension
-img_array = np.expand_dims(img_array, axis=0)
-
-# Predict
-prediction = model.predict(img_array)
-
-# Get class names automatically from Train folder
-class_names = sorted([
-    d for d in os.listdir("dataset/Train")
-    if os.path.isdir(os.path.join("dataset/Train", d))
-])
-
-# Get prediction
-pred_index = np.argmax(prediction)
-confidence = np.max(prediction) * 100
-
-# Print result
-print("\n==========================")
-print("Disease :", class_names[pred_index])
-print("Confidence :", round(float(confidence), 2), "%")
-print("==========================")
+if __name__ == "__main__":
+    main()

@@ -1,65 +1,201 @@
 {% extends "base.html" %}
-{% block title %}Crop Recommendation - AgriAI{% endblock %}
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Crop Recommendation</h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('crop.predict_crop_route') }}">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Nitrogen (N)</label>
-                            <input type="number" step="any" name="N" class="form-control" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Phosphorus (P)</label>
-                            <input type="number" step="any" name="P" class="form-control" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Potassium (K)</label>
-                            <input type="number" step="any" name="K" class="form-control" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Temperature (°C)</label>
-                            <input type="number" step="any" name="temperature" class="form-control" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Humidity (%)</label>
-                            <input type="number" step="any" name="humidity" class="form-control" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">pH</label>
-                            <input type="number" step="any" name="ph" class="form-control" required>
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Rainfall (mm)</label>
-                            <input type="number" step="any" name="rainfall" class="form-control" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Get Recommendation</button>
-                </form>
+{% block title %}{{ t('nav_crop') }} - {{ t('app_name') }}{% endblock %}
 
-                {% if result %}
-                <div class="alert alert-success mt-4">
-                    <h5>Recommended Crop:</h5>
-                    <h2 class="fw-bold">{{ result.details.display_name or result.recommended_crop }}</h2>
-                    <p class="mb-1"><strong>Best Season:</strong> {{ result.details.season }}</p>
-                    <p class="mb-2"><strong>Ideal growing range:</strong></p>
-                    <ul>
-                        <li><strong>Temperature:</strong> {{ result.details.temperature }}</li>
-                        <li><strong>Humidity:</strong> {{ result.details.humidity }}</li>
-                        <li><strong>pH:</strong> {{ result.details.ph }}</li>
-                        <li><strong>Rainfall:</strong> {{ result.details.rainfall }}</li>
-                        <li><strong>Soil:</strong> {{ result.details.soil }}</li>
-                    </ul>
-                    <p class="mb-0"><strong>Care Tips:</strong> {{ result.details.care }}</p>
+{% block content %}
+<div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+        <!-- Main Form Panel -->
+        <div class="glass-panel">
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title"><span>🌾</span> {{ t('nav_crop') }}</h2>
+                    <p class="text-secondary small mb-0 mt-1">Provide your soil test results and local meteorological data.</p>
+                </div>
+                <div class="d-none d-sm-block">
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 rounded-pill px-3 py-1">
+                        Random Forest (100 Trees)
+                    </span>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger mb-4" role="alert" style="border-radius:12px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fecdd3;">
+                    <span>⚠️</span> {{ error }}
                 </div>
                 {% endif %}
+
+                <!-- One-Click Evaluation Presets Ribbon -->
+                <div class="presets-ribbon">
+                    <span class="text-success small fw-bold me-1">⚡ Quick Presets:</span>
+                    <button type="button" class="preset-chip" data-crop-preset="rice">🌾 Rice</button>
+                    <button type="button" class="preset-chip" data-crop-preset="maize">🌽 Maize</button>
+                    <button type="button" class="preset-chip" data-crop-preset="chickpea">🧆 Chickpea</button>
+                    <button type="button" class="preset-chip" data-crop-preset="cotton">👕 Cotton</button>
+                    <button type="button" class="preset-chip" data-crop-preset="coffee">☕ Coffee</button>
+                    <button type="button" class="preset-chip" data-crop-preset="apple">🍎 Apple</button>
+                </div>
+
+                <form method="POST" action="{{ url_for('crop.predict_crop_route') }}" id="cropForm">
+                    <!-- Soil Nutrients Section -->
+                    <div class="mb-4">
+                        <h6 class="text-success fw-bold text-uppercase small mb-3">🧪 Soil Macronutrients (kg/ha)</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="input-label" for="inputN">
+                                    <span>{{ t('nitrogen_label') }}</span>
+                                    <span class="input-desc">0 - 140</span>
+                                </label>
+                                <input type="number" step="any" min="0" max="140" id="inputN" name="N" class="custom-input" value="{{ inputs.N if inputs else '' }}" required placeholder="e.g. 80">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="input-label" for="inputP">
+                                    <span>{{ t('phosphorus_label') }}</span>
+                                    <span class="input-desc">5 - 145</span>
+                                </label>
+                                <input type="number" step="any" min="5" max="145" id="inputP" name="P" class="custom-input" value="{{ inputs.P if inputs else '' }}" required placeholder="e.g. 40">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="input-label" for="inputK">
+                                    <span>{{ t('potassium_label') }}</span>
+                                    <span class="input-desc">5 - 205</span>
+                                </label>
+                                <input type="number" step="any" min="5" max="205" id="inputK" name="K" class="custom-input" value="{{ inputs.K if inputs else '' }}" required placeholder="e.g. 40">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Climate & Soil Quality Section -->
+                    <div class="mb-4">
+                        <h6 class="text-success fw-bold text-uppercase small mb-3">🌦️ Weather &amp; Soil Conditions</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3 col-6">
+                                <label class="input-label" for="inputTemp">
+                                    <span>{{ t('temperature_label') }}</span>
+                                </label>
+                                <input type="number" step="any" min="8" max="44" id="inputTemp" name="temperature" class="custom-input" value="{{ inputs.temperature if inputs else '' }}" required placeholder="e.g. 24.5">
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="input-label" for="inputHum">
+                                    <span>{{ t('humidity_label') }}</span>
+                                </label>
+                                <input type="number" step="any" min="14" max="100" id="inputHum" name="humidity" class="custom-input" value="{{ inputs.humidity if inputs else '' }}" required placeholder="e.g. 82.0">
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="input-label" for="inputPH">
+                                    <span>{{ t('ph_label') }}</span>
+                                </label>
+                                <input type="number" step="any" min="3.5" max="10.0" id="inputPH" name="ph" class="custom-input" value="{{ inputs.ph if inputs else '' }}" required placeholder="e.g. 6.5">
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="input-label" for="inputRain">
+                                    <span>{{ t('rainfall_label') }}</span>
+                                </label>
+                                <input type="number" step="any" min="20" max="300" id="inputRain" name="rainfall" class="custom-input" value="{{ inputs.rainfall if inputs else '' }}" required placeholder="e.g. 200.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-agri-primary w-100 py-3" id="predictCropBtn">
+                        <span>🌱</span> {{ t('btn_predict_crop') }}
+                    </button>
+                </form>
             </div>
         </div>
+
+        <!-- Prediction Result Display -->
+        {% if result %}
+        <div class="glass-panel mt-4 p-4" style="border-color: rgba(52, 211, 153, 0.45); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                <div>
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill mb-2">
+                        ✓ AI Recommendation
+                    </span>
+                    <h1 class="display-5 fw-bold text-light mb-0">
+                        {{ result.details.display_name }}
+                    </h1>
+                    <span class="text-secondary small">Model Output: {{ result.recommended_crop }}</span>
+                </div>
+
+                <!-- Audio TTS Trigger -->
+                <div>
+                    <button type="button" class="btn-audio" data-speak="{{ result.details.display_name }}. {{ result.details.season }}. {{ result.details.care }}">
+                        <span class="audio-icon">🔊</span>
+                        <span>{{ t('btn_listen') }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Model Confidence Bar -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="small text-secondary">{{ t('result_confidence') }}:</span>
+                    <span class="fw-bold text-success">{{ result.confidence }}%</span>
+                </div>
+                <div class="confidence-bar-wrapper">
+                    <div class="confidence-fill high" style="width: {{ result.confidence }}%;"></div>
+                </div>
+            </div>
+
+            <!-- Optimal Agronomic Parameters -->
+            <h5 class="fw-bold text-light mb-3">📋 {{ t('result_growing_conditions') }}</h5>
+            <div class="info-cards-grid">
+                <div class="info-card">
+                    <div class="info-card-label">🗓️ {{ t('result_season') }}</div>
+                    <div class="info-card-val small">{{ result.details.season }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">🌱 {{ t('result_soil') }}</div>
+                    <div class="info-card-val small">{{ result.details.soil }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">🌡️ Optimal Temperature</div>
+                    <div class="info-card-val">{{ result.details.temperature }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">💧 Optimal Humidity</div>
+                    <div class="info-card-val">{{ result.details.humidity }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">🧪 Ideal Soil pH</div>
+                    <div class="info-card-val">{{ result.details.ph }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">🌧️ Annual Rainfall</div>
+                    <div class="info-card-val">{{ result.details.rainfall }}</div>
+                </div>
+            </div>
+
+            <!-- Farming & Care Guide -->
+            <div class="mt-4 p-3 rounded-3" style="background: rgba(8, 22, 14, 0.7); border: 1px solid rgba(52, 211, 153, 0.15);">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold text-success">🌿 {{ t('result_care') }}</span>
+                    <button type="button" class="btn-audio py-1 px-2" style="font-size:0.75rem;" data-speak="{{ result.details.care }}">
+                        <span class="audio-icon">🔊</span>
+                    </button>
+                </div>
+                <p class="text-light mb-0 small" style="line-height: 1.7;">
+                    {{ result.details.care }}
+                </p>
+            </div>
+
+            <!-- Viable Alternatives -->
+            {% if result.alternatives and result.alternatives|length > 1 %}
+            <div class="mt-4">
+                <span class="small text-secondary fw-bold text-uppercase d-block mb-2">{{ t('result_alternative_crops') }}:</span>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for alt in result.alternatives %}
+                        {% if alt.crop_key != result.recommended_crop %}
+                        <span class="badge bg-dark border border-secondary px-3 py-2 text-light rounded-pill">
+                            {{ alt.crop_name }} ({{ alt.confidence }}%)
+                        </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

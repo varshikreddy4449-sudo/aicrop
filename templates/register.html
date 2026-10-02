@@ -1,35 +1,47 @@
 {% extends "base.html" %}
-{% block title %}Register - AgriAI{% endblock %}
+{% block title %}{{ t('nav_register') }} - {{ t('app_name') }}{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Create Account</h4>
+<div class="row justify-content-center py-4">
+    <div class="col-md-6 col-lg-5">
+        <div class="glass-panel p-4 p-md-5">
+            <div class="text-center mb-4">
+                <span class="fs-1 d-block mb-2">🌱</span>
+                <h3 class="fw-bold mb-1">{{ t('nav_register') }}</h3>
+                <p class="text-secondary small mb-0">{{ t('auth_register_prompt') }}</p>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('auth.register') }}">
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" required minlength="3" maxlength="30">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required minlength="6">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Confirm Password</label>
-                        <input type="password" name="confirm_password" class="form-control" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Register</button>
-                </form>
-                <p class="mt-3 text-center">
-                    Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
-                </p>
+
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                <div class="mb-3">
+                    <label class="input-label" for="regUsername">{{ t('auth_username') }}</label>
+                    <input type="text" id="regUsername" name="username" class="custom-input" value="{{ username if username else '' }}" required minlength="3" maxlength="30" placeholder="e.g. farmer123">
+                </div>
+
+                <div class="mb-3">
+                    <label class="input-label" for="regEmail">{{ t('auth_email') }}</label>
+                    <input type="email" id="regEmail" name="email" class="custom-input" value="{{ email if email else '' }}" required placeholder="farmer@example.com">
+                </div>
+
+                <div class="mb-3">
+                    <label class="input-label" for="regPassword">{{ t('auth_password') }}</label>
+                    <input type="password" id="regPassword" name="password" class="custom-input" required minlength="6" placeholder="Min 6 characters">
+                </div>
+
+                <div class="mb-4">
+                    <label class="input-label" for="regConfirmPassword">{{ t('auth_confirm_password') }}</label>
+                    <input type="password" id="regConfirmPassword" name="confirm_password" class="custom-input" required minlength="6" placeholder="Repeat password">
+                </div>
+
+                <button type="submit" class="btn-agri-primary w-100 py-3 mb-3">
+                    <span>✨</span> {{ t('btn_register') }}
+                </button>
+            </form>
+
+            <div class="text-center mt-3 pt-3 border-top border-secondary border-opacity-25">
+                <span class="text-secondary small">{{ t('auth_have_account') }}</span>
+                <a href="{{ url_for('auth.login') }}" class="fw-bold text-success ms-1 small">
+                    {{ t('btn_login') }} &rarr;
+                </a>
             </div>
         </div>
     </div>

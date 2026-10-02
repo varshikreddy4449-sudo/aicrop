@@ -5,17 +5,25 @@ Centralized configuration for the Flask application.
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-secret-key-in-production")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "agri_ai_secure_session_key_2026")
+
+    # MongoDB connection
+    MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+    DB_NAME   = os.environ.get("DB_NAME", "AgriAI_DB")
 
     # Upload settings
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
-    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB
 
     # Model paths
     DISEASE_MODEL_PATH = os.path.join(os.path.dirname(__file__), "models", "disease_model.h5")
     CROP_MODEL_PATH    = os.path.join(os.path.dirname(__file__), "models", "model.pkl")
     CROP_SCALER_PATH   = os.path.join(os.path.dirname(__file__), "models", "minmaxscaler.pkl")
+
+    # Multi-language configuration
+    SUPPORTED_LANGUAGES = ["en", "hi", "te"]
+    DEFAULT_LANGUAGE    = "en"
 
     # Disease class labels (must match your model's training label order)
     DISEASE_CLASSES = [

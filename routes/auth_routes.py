@@ -1,16 +1,15 @@
 """
 routes/auth_routes.py
-Handles user registration, login, and logout.
+Handles user registration, login, and logout with resilient database access.
 """
-
+import logging
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from datetime import datetime
 from bson.objectid import ObjectId
-
-from db import users_collection, get_server_time
+from db import users_collection, get_server_time, is_db_connected
 from utils.auth_utils import hash_password, verify_password, login_required
 from utils.validators import is_valid_email, is_valid_username, is_valid_password
 
+logger = logging.getLogger("AgriAI.Auth")
 auth_bp = Blueprint("auth", __name__)
 
 
@@ -22,7 +21,6 @@ def register():
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
 
-        # ---- Validation ----
         errors = []
         if not is_valid_username(username):
             errors.append("Username must be 3-30 alphanumeric characters.")
@@ -36,24 +34,31 @@ def register():
         if errors:
             for err in errors:
                 flash(err, "danger")
-            return render_template("register.html")
+            return render_template("register.html", username=username, email=email)
 
-        # ---- Check for existing user ----
-        if users_collection.find_one({"$or": [{"email": email}, {"username": username}]}):
-            flash("Username or email already registered.", "danger")
-            return render_template("register.html")
+        if not is_db_connected():
+            flash("Database service is currently unreachable. Please ensure MongoDB is running.", "danger")
+            return render_template("register.html", username=username, email=email)
 
-        # ---- Create user ----
-        user_doc = {
-            "username": username,
-            "email": email,
-            "password": hash_password(password),
-            "created_at": get_server_time(),
-        }
-        users_collection.insert_one(user_doc)
+        try:
+            if users_collection.find_one({"$or": [{"email": email}, {"username": username}]}):
+                flash("Username or email already registered.", "danger")
+                return render_template("register.html", username=username, email=email)
 
-        flash("Registration successful. Please log in.", "success")
-        return redirect(url_for("auth.login"))
+            user_doc = {
+                "username": username,
+                "email": email,
+                "password": hash_password(password),
+                "created_at": get_server_time(),
+            }
+            users_collection.insert_one(user_doc)
+
+            flash("Registration successful. Please log in with your credentials.", "success")
+            return redirect(url_for("auth.login"))
+        except Exception as e:
+            logger.error("Registration error: %s", e)
+            flash("Registration could not be completed. Please try again.", "danger")
+            return render_template("register.html", username=username, email=email)
 
     return render_template("register.html")
 
@@ -66,22 +71,30 @@ def login():
 
         if not identifier or not password:
             flash("Please provide both username/email and password.", "danger")
-            return render_template("login.html")
+            return render_template("login.html", identifier=identifier)
 
-        user = users_collection.find_one({
-            "$or": [{"email": identifier}, {"username": identifier}]
-        })
+        if not is_db_connected():
+            flash("Database service is currently unreachable. Please ensure MongoDB is running.", "danger")
+            return render_template("login.html", identifier=identifier)
 
-        if not user or not verify_password(password, user["password"]):
-            flash("Invalid credentials. Please try again.", "danger")
-            return render_template("login.html")
+        try:
+            user = users_collection.find_one({
+                "$or": [{"email": identifier}, {"username": identifier}]
+            })
 
-        # ---- Set session ----
-        session["user_id"] = str(user["_id"])
-        session["username"] = user["username"]
+            if not user or not verify_password(password, user["password"]):
+                flash("Invalid credentials. Please verify your username/password.", "danger")
+                return render_template("login.html", identifier=identifier)
 
-        flash(f"Welcome back, {user['username']}!", "success")
-        return redirect(url_for("dashboard.dashboard"))
+            session["user_id"] = str(user["_id"])
+            session["username"] = user["username"]
+
+            flash(f"Welcome back, {user['username']}!", "success")
+            return redirect(url_for("dashboard.dashboard"))
+        except Exception as e:
+            logger.error("Login error: %s", e)
+            flash("Login attempt failed. Please check database connection.", "danger")
+            return render_template("login.html", identifier=identifier)
 
     return render_template("login.html")
 
@@ -90,5 +103,5 @@ def login():
 @login_required
 def logout():
     session.clear()
-    flash("You have been logged out.", "info")
+    flash("You have been successfully logged out.", "info")
     return redirect(url_for("auth.login"))

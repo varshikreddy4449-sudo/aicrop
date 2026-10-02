@@ -1,105 +1,204 @@
 {% extends "base.html" %}
-{% block title %}Disease Detection - AgriAI{% endblock %}
+{% block title %}{{ t('nav_disease') }} - {{ t('app_name') }}{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Plant Disease Detection</h4>
+<div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+        <!-- Leaf Upload Form Panel -->
+        <div class="glass-panel">
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title"><span>🍃</span> {{ t('nav_disease') }}</h2>
+                    <p class="text-secondary small mb-0 mt-1">Upload a clear leaf photo for deep-learning plant disease diagnosis.</p>
+                </div>
+                <div class="d-none d-sm-block">
+                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 rounded-pill px-3 py-1">
+                        MobileNetV2 Deep Learning
+                    </span>
+                </div>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('disease.predict_disease_route') }}" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label">Upload Leaf Image</label>
-                        <input type="file" name="leaf_image" class="form-control" accept=".png,.jpg,.jpeg" required>
-                        <small class="form-text text-muted">Upload a clear image of the leaf for accurate detection</small>
+
+            <div class="panel-body">
+                <form method="POST" action="{{ url_for('disease.predict_disease_route') }}" enctype="multipart/form-data" id="diseaseUploadForm">
+                    <input type="file" name="leaf_image" id="leafFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;">
+
+                    <!-- Interactive Drag-and-Drop Area -->
+                    <div class="dropzone-container" id="leafDropzone">
+                        <span class="dropzone-icon">📷</span>
+                        <h5 class="fw-bold mb-1">{{ t('drag_drop_title') }}</h5>
+                        <p class="text-secondary small mb-3">{{ t('drag_drop_desc') }}</p>
+                        <button type="button" class="btn-agri-outline py-2 px-3 small">
+                            📁 Browse Device Photo
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Detect Disease</button>
+
+                    <!-- Instant Preview Box -->
+                    <div id="previewContainer" class="preview-wrapper" style="display: none;">
+                        <img id="previewImg" class="preview-img" src="" alt="Selected leaf preview">
+                        <div class="preview-meta">
+                            <div>
+                                <span class="fw-bold" id="previewName">leaf.jpg</span>
+                                <span class="text-secondary ms-2 small" id="previewSize">-- KB</span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="clearImageBtn">
+                                ✕ {{ t('btn_clear') }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scanning / Analyzing Animation -->
+                    <div id="scanAnimation" style="display: none;" class="mt-3">
+                        <p class="text-center text-success small mb-1">⚡ {{ t('analyzing_title') }}</p>
+                        <div class="scan-animation">
+                            <div class="scan-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn-agri-primary w-100 py-3" id="submitScanBtn" disabled>
+                            <span>🔍</span> {{ t('btn_predict_disease') }}
+                        </button>
+                    </div>
                 </form>
+            </div>
+        </div>
 
-                {% if result %}
-                <div class="mt-4">
-                    <div class="text-center mb-3">
-                        <img src="{{ url_for('uploaded_file', filename=result.image_filename) }}" class="preview-img" alt="Uploaded leaf" style="max-width: 100%; border-radius: 8px;">
-                    </div>
-                    
-                    <!-- Status Indicator -->
-                    {% if "Healthy" in result.disease_name %}
-                    <div class="alert alert-success mt-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                            </div>
-                            <div>
-                                <h5 class="mb-0">Leaf Status: <strong>HEALTHY ✓</strong></h5>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-danger mt-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                            </div>
-                            <div>
-                                <h5 class="mb-0">Leaf Status: <strong>DISEASED ⚠</strong></h5>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+        <!-- Disease Detection Result Panel -->
+        {% if result %}
+        <div class="glass-panel mt-4 p-4" style="border-color: {% if result.status == 'Healthy' %}rgba(52, 211, 153, 0.45){% else %}rgba(244, 63, 94, 0.45){% endif %}; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+            <!-- Status Banner -->
+            <div class="status-banner {% if result.status == 'Healthy' %}healthy{% else %}diseased{% endif %}">
+                <span class="status-icon">{% if result.status == 'Healthy' %}🛡️{% else %}⚠️{% endif %}</span>
+                <div class="flex-grow-1">
+                    <span class="small text-uppercase fw-bold d-block">{{ t('result_leaf_status') }}</span>
+                    <h3 class="mb-0 fw-bold">
+                        {% if result.status == 'Healthy' %}
+                            {{ t('result_status_healthy') }} ✓
+                        {% else %}
+                            {{ t('result_status_diseased') }} ⚠️
+                        {% endif %}
+                    </h3>
+                </div>
+                <!-- Audio Reader Button -->
+                <div>
+                    <button type="button" class="btn-audio" data-speak="{{ result.display_name }}. {{ result.cause }}. {{ result.solution }}">
+                        <span class="audio-icon">🔊</span>
+                        <span>{{ t('btn_listen') }}</span>
+                    </button>
+                </div>
+            </div>
 
-                    <!-- Detection Details -->
-                    <div class="card border-secondary mt-3">
-                        <div class="card-body">
-                            <p class="mb-2"><strong>Disease Detected:</strong> <span class="badge bg-primary">{{ result.disease_name }}</span></p>
-                            <p class="mb-3"><strong>Confidence Level:</strong> 
-                                <div class="progress" style="height: 25px;">
-                                    <div class="progress-bar {% if result.confidence >= 80 %}bg-success{% elif result.confidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
-                                         role="progressbar" 
-                                         style="width: {{ result.confidence }}%;" 
-                                         aria-valuenow="{{ result.confidence }}" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
-                                        {{ result.confidence }}%
-                                    </div>
-                                </div>
-                            </p>
-                        </div>
-                    </div>
+            <!-- Image & Primary Disease Diagnosis Grid -->
+            <div class="row g-4 align-items-center mb-4">
+                <div class="col-md-5 text-center">
+                    <img src="{{ url_for('uploaded_file', filename=result.image_filename) }}" class="rounded-3 border border-secondary border-opacity-25 shadow" style="max-height: 220px; width: 100%; object-fit: cover;" alt="Scanned Leaf">
+                </div>
+                <div class="col-md-7">
+                    <span class="small text-secondary fw-bold text-uppercase d-block mb-1">{{ t('result_disease_detected') }}:</span>
+                    <h2 class="display-6 fw-bold text-light mb-1">{{ result.display_name }}</h2>
+                    <p class="text-secondary small mb-3">Model Tag: {{ result.disease_name }} &bull; Plant: {{ result.crop }}</p>
 
-                    <!-- Cause & Solution -->
-                    <div class="card border-info mt-3">
-                        <div class="card-header bg-info text-white">
-                            <h6 class="mb-0">📋 Cause & Recommended Solution</h6>
+                    <!-- Confidence Bar -->
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small text-secondary">{{ t('result_confidence') }}:</span>
+                            <span class="fw-bold {% if result.confidence >= 80 %}text-success{% elif result.confidence >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ result.confidence }}%
+                            </span>
                         </div>
-                        <div class="card-body">
-                            <p class="mb-3"><strong>What Causes This:</strong></p>
-                            <div class="ps-3 border-start border-4 border-info mb-3">
-                                {{ result.cause }}
-                            </div>
-                            
-                            <p class="mb-3"><strong>Recommended Action:</strong></p>
-                            <div class="ps-3 border-start border-4 border-success">
-                                {{ result.solution }}
-                            </div>
+                        <div class="confidence-bar-wrapper">
+                            <div class="confidence-fill {% if result.confidence >= 80 %}high{% elif result.confidence >= 60 %}medium{% else %}low{% endif %}" style="width: {{ result.confidence }}%;"></div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
             </div>
+
+            <!-- Deep Pathology Breakdown Cards -->
+            <div class="row g-3">
+                <!-- Biological Cause -->
+                <div class="col-md-6">
+                    <div class="info-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="info-card-label">🔬 {{ t('result_cause') }}</span>
+                            <button type="button" class="btn-audio py-0 px-2" style="font-size:0.75rem;" data-speak="{{ result.cause }}">
+                                <span class="audio-icon">🔊</span>
+                            </button>
+                        </div>
+                        <p class="small text-light mb-0" style="line-height: 1.6;">{{ result.cause }}</p>
+                    </div>
+                </div>
+
+                <!-- Visible Symptoms -->
+                <div class="col-md-6">
+                    <div class="info-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="info-card-label">👁️ {{ t('result_symptoms') }}</span>
+                            <button type="button" class="btn-audio py-0 px-2" style="font-size:0.75rem;" data-speak="{{ result.symptoms }}">
+                                <span class="audio-icon">🔊</span>
+                            </button>
+                        </div>
+                        <p class="small text-light mb-0" style="line-height: 1.6;">{{ result.symptoms }}</p>
+                    </div>
+                </div>
+
+                <!-- Recommended Chemical Treatment -->
+                <div class="col-md-6">
+                    <div class="info-card h-100" style="border-left: 3px solid #10b981;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="info-card-label text-success">💊 {{ t('result_treatment') }}</span>
+                            <button type="button" class="btn-audio py-0 px-2" style="font-size:0.75rem;" data-speak="{{ result.solution }}">
+                                <span class="audio-icon">🔊</span>
+                            </button>
+                        </div>
+                        <p class="small text-light mb-0" style="line-height: 1.6;">{{ result.solution }}</p>
+                    </div>
+                </div>
+
+                <!-- Organic & Natural Remedies -->
+                <div class="col-md-6">
+                    <div class="info-card h-100" style="border-left: 3px solid #34d399;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="info-card-label text-success">🌿 {{ t('result_organic') }}</span>
+                            <button type="button" class="btn-audio py-0 px-2" style="font-size:0.75rem;" data-speak="{{ result.organic_solution }}">
+                                <span class="audio-icon">🔊</span>
+                            </button>
+                        </div>
+                        <p class="small text-light mb-0" style="line-height: 1.6;">{{ result.organic_solution }}</p>
+                    </div>
+                </div>
+
+                <!-- Preventive Measures -->
+                <div class="col-12">
+                    <div class="info-card" style="border-left: 3px solid #38bdf8;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="info-card-label text-info">🛡️ {{ t('result_prevention') }}</span>
+                            <button type="button" class="btn-audio py-0 px-2" style="font-size:0.75rem;" data-speak="{{ result.prevention }}">
+                                <span class="audio-icon">🔊</span>
+                            </button>
+                        </div>
+                        <p class="small text-light mb-0" style="line-height: 1.6;">{{ result.prevention }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternative Model Diagnoses -->
+            {% if result.top_predictions and result.top_predictions|length > 1 %}
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                <span class="small text-secondary fw-bold text-uppercase d-block mb-2">Alternative Diagnostic Possibilities:</span>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for p in result.top_predictions %}
+                        {% if p.disease_key != result.disease_name %}
+                        <span class="badge bg-dark border border-secondary px-3 py-2 text-light rounded-pill">
+                            {{ p.name }} ({{ p.confidence }}%)
+                        </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
-
-<style>
-    .preview-img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .progress {
-        background-color: #e9ecef;
-    }
-</style>
 {% endblock %}

@@ -1,72 +1,146 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - AgriAI{% endblock %}
-{% block content %}
-<h3 class="mb-4">Welcome, {{ user.username }} 👋</h3>
+{% block title %}{{ t('nav_dashboard') }} - {{ t('app_name') }}{% endblock %}
 
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="stat-box">
-            <h2>{{ total_predictions }}</h2>
-            <p class="mb-0">Total Predictions</p>
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">{{ t('welcome') }}, {{ user.username }} 👋</h2>
+        <p class="text-secondary small mb-0">Here is your agricultural AI diagnostic and recommendation summary.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('crop.predict_crop_route') }}" class="btn-agri-primary py-2 px-3 small">
+            <span>🌾</span> {{ t('btn_predict_crop') }}
+        </a>
+        <a href="{{ url_for('disease.predict_disease_route') }}" class="btn-agri-outline py-2 px-3 small">
+            <span>🍃</span> {{ t('btn_predict_disease') }}
+        </a>
+    </div>
+</div>
+
+<!-- Key Activity Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon-wrap text-success">📈</div>
+        <div>
+            <div class="stat-number">{{ total_predictions }}</div>
+            <div class="stat-label">{{ t('stat_total_predictions') }}</div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="stat-box">
-            <h2>{{ total_crop_count }}</h2>
-            <p class="mb-0">Crop Recommendations</p>
+    <div class="stat-card">
+        <div class="stat-icon-wrap text-warning">🌾</div>
+        <div>
+            <div class="stat-number">{{ total_crop_count }}</div>
+            <div class="stat-label">{{ t('stat_crop_count') }}</div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="stat-box">
-            <h2>{{ total_disease_count }}</h2>
-            <p class="mb-0">Disease Detections</p>
+    <div class="stat-card">
+        <div class="stat-icon-wrap text-info">🍃</div>
+        <div>
+            <div class="stat-number">{{ total_disease_count }}</div>
+            <div class="stat-label">{{ t('stat_disease_count') }}</div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">Recent Crop Recommendations</div>
-            <div class="card-body">
+<!-- Recent Predictions Row -->
+<div class="row g-4">
+    <!-- Recent Crop Recommendations -->
+    <div class="col-lg-6">
+        <div class="glass-panel h-100">
+            <div class="panel-header">
+                <h5 class="panel-title"><span>🌾</span> {{ t('recent_crops_title') }}</h5>
+                <a href="{{ url_for('dashboard.history') }}" class="small text-success">{{ t('btn_view_history') }} &rarr;</a>
+            </div>
+            <div class="panel-body">
                 {% if recent_crops %}
-                <table class="table table-sm">
-                    <thead><tr><th>Date</th><th>Recommended Crop</th></tr></thead>
-                    <tbody>
-                    {% for item in recent_crops %}
-                        <tr>
-                            <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td><span class="badge bg-success">{{ item.recommended_crop }}</span></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="agri-table">
+                        <thead>
+                            <tr>
+                                <th>{{ t('table_date') }}</th>
+                                <th>{{ t('table_crop') }}</th>
+                                <th>{{ t('table_confidence') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_crops %}
+                            <tr>
+                                <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else 'Recent' }}</td>
+                                <td>
+                                    <span class="fw-bold text-light">{{ item.localized_crop or item.recommended_crop }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25">
+                                        {{ item.confidence or '99+' }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                <p class="text-muted">No crop recommendations yet.</p>
+                <div class="text-center py-4">
+                    <p class="text-secondary small mb-3">{{ t('no_crops_yet') }}</p>
+                    <a href="{{ url_for('crop.predict_crop_route') }}" class="btn-agri-outline py-2 px-3 small">
+                        <span>🌾</span> {{ t('btn_predict_crop') }}
+                    </a>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">Recent Disease Detections</div>
-            <div class="card-body">
+    <!-- Recent Disease Diagnoses -->
+    <div class="col-lg-6">
+        <div class="glass-panel h-100">
+            <div class="panel-header">
+                <h5 class="panel-title"><span>🍃</span> {{ t('recent_diseases_title') }}</h5>
+                <a href="{{ url_for('dashboard.history') }}" class="small text-success">{{ t('btn_view_history') }} &rarr;</a>
+            </div>
+            <div class="panel-body">
                 {% if recent_diseases %}
-                <table class="table table-sm">
-                    <thead><tr><th>Date</th><th>Disease</th><th>Confidence</th></tr></thead>
-                    <tbody>
-                    {% for item in recent_diseases %}
-                        <tr>
-                            <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td>{{ item.disease_name }}</td>
-                            <td>{{ item.confidence }}%</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="agri-table">
+                        <thead>
+                            <tr>
+                                <th>{{ t('table_date') }}</th>
+                                <th>{{ t('table_image') }}</th>
+                                <th>{{ t('table_disease') }}</th>
+                                <th>{{ t('table_confidence') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_diseases %}
+                            <tr>
+                                <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else 'Recent' }}</td>
+                                <td>
+                                    {% if item.image_filename %}
+                                    <img src="{{ url_for('uploaded_file', filename=item.image_filename) }}" width="42" height="42" class="rounded-2 border border-secondary border-opacity-25" style="object-fit: cover;" alt="Leaf">
+                                    {% else %}
+                                    🍃
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-light">{{ item.localized_disease or item.disease_name }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25">
+                                        {{ item.confidence }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                <p class="text-muted">No disease detections yet.</p>
+                <div class="text-center py-4">
+                    <p class="text-secondary small mb-3">{{ t('no_diseases_yet') }}</p>
+                    <a href="{{ url_for('disease.predict_disease_route') }}" class="btn-agri-outline py-2 px-3 small">
+                        <span>🍃</span> {{ t('btn_predict_disease') }}
+                    </a>
+                </div>
                 {% endif %}
             </div>
         </div>

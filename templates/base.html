@@ -1,50 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AgriAI{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <title>{% block title %}AgriAI - {{ t('tagline') }}{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script>window.CURRENT_LANG = "{{ current_lang }}";</script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">🌱 AgriAI</a>
-            <div class="collapse navbar-collapse justify-content-end">
-                {% if session.get('user_id') %}
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('crop.predict_crop_route') }}">Crop Recommendation</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('disease.predict_disease_route') }}">Disease Detection</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard.history') }}">History</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout ({{ session.get('username') }})</a></li>
+    <!-- Top Navigation Bar -->
+    <nav class="custom-navbar">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a class="brand-badge" href="{{ url_for('index') }}">
+                <span class="brand-icon">🌱</span>
+                <span>{{ t('app_name') }}</span>
+            </a>
+
+            <div class="d-flex align-items-center gap-3">
+                <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link-custom {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <span>🏠</span> {{ t('nav_home') }}
+                        </a>
+                    </li>
+                    {% if session.get('user_id') %}
+                    <li class="nav-item">
+                        <a class="nav-link-custom {% if request.endpoint and 'dashboard' in request.endpoint and 'history' not in request.endpoint %}active{% endif %}" href="{{ url_for('dashboard.dashboard') }}">
+                            <span>📊</span> {{ t('nav_dashboard') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-custom {% if request.endpoint and 'crop' in request.endpoint %}active{% endif %}" href="{{ url_for('crop.predict_crop_route') }}">
+                            <span>🌾</span> {{ t('nav_crop') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-custom {% if request.endpoint and 'disease' in request.endpoint %}active{% endif %}" href="{{ url_for('disease.predict_disease_route') }}">
+                            <span>🍃</span> {{ t('nav_disease') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-custom {% if request.endpoint and 'history' in request.endpoint %}active{% endif %}" href="{{ url_for('dashboard.history') }}">
+                            <span>📜</span> {{ t('nav_history') }}
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
-                {% else %}
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
-                </ul>
-                {% endif %}
+
+                <!-- Language Selector Dropdown -->
+                <div class="dropdown">
+                    <button class="lang-selector-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="langSelectorDropdown">
+                        <span>🌐</span>
+                        <span>{{ languages.get(current_lang, 'Language') }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end lang-dropdown-menu" aria-labelledby="langSelectorDropdown">
+                        {% for code, name in languages.items() %}
+                        <li>
+                            <a class="dropdown-item lang-dropdown-item {% if current_lang == code %}active{% endif %}" href="{{ url_for('set_language', lang_code=code) }}">
+                                {% if code == 'en' %}🇬🇧{% elif code == 'hi' %}🇮🇳{% elif code == 'te' %}🇮🇳{% endif %}
+                                <span>{{ name }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- User Session Actions -->
+                <div class="d-flex align-items-center gap-2">
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn-agri-outline py-1 px-3" style="font-size:0.88rem;">
+                        <span>🚪</span> {{ t('nav_logout') }}
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-agri-outline py-1 px-3" style="font-size:0.88rem;">
+                        {{ t('nav_login') }}
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn-agri-primary py-1 px-3" style="font-size:0.88rem;">
+                        {{ t('nav_register') }}
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <!-- Main Content Area -->
+    <main class="page-container">
+        <div class="container">
+            <!-- Flash Message Alerts -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else ('warning' if category == 'warning' else 'success') }} alert-dismissible fade show" role="alert" style="border-radius:14px; background: rgba(14, 34, 23, 0.9); border: 1px solid var(--panel-border); color: #f0fdf4;">
+                            <span class="me-2">{% if category == 'danger' %}⚠️{% elif category == 'warning' %}🔔{% else %}✅{% endif %}</span>
+                            {{ message }}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        {% block content %}{% endblock %}
-    </div>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modern Agriculture Footer -->
+    <footer class="custom-footer">
+        <div class="container">
+            <p class="mb-1 fw-bold text-light">🌱 {{ t('app_name') }} — {{ t('tagline') }}</p>
+            <p class="mb-0 text-muted" style="font-size:0.82rem;">
+                Powered by MobileNetV2 Deep Learning &amp; Random Forest Classifier | Flask &bull; MongoDB &bull; Scikit-learn
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core Application Client JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

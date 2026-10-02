@@ -1,57 +1,143 @@
 {% extends "base.html" %}
-{% block title %}History - AgriAI{% endblock %}
-{% block content %}
-<h3 class="mb-4">Prediction History</h3>
+{% block title %}{{ t('history_title') }} - {{ t('app_name') }}{% endblock %}
 
-<div class="card mb-4">
-    <div class="card-header bg-success text-white">Crop Recommendation History</div>
-    <div class="card-body">
-        {% if all_crops %}
-        <table class="table table-striped">
-            <thead><tr><th>Date</th><th>N</th><th>P</th><th>K</th><th>Temp</th><th>Humidity</th><th>pH</th><th>Rainfall</th><th>Recommended Crop</th></tr></thead>
-            <tbody>
-            {% for item in all_crops %}
-                <tr>
-                    <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ item.inputs.N }}</td>
-                    <td>{{ item.inputs.P }}</td>
-                    <td>{{ item.inputs.K }}</td>
-                    <td>{{ item.inputs.temperature }}</td>
-                    <td>{{ item.inputs.humidity }}</td>
-                    <td>{{ item.inputs.ph }}</td>
-                    <td>{{ item.inputs.rainfall }}</td>
-                    <td><span class="badge bg-success">{{ item.recommended_crop }}</span></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="text-muted">No crop recommendation history found.</p>
-        {% endif %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">📜 {{ t('history_title') }}</h2>
+        <p class="text-secondary small mb-0">Complete historical logs of your crop recommendations and leaf disease diagnoses.</p>
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header bg-success text-white">Disease Detection History</div>
-    <div class="card-body">
-        {% if all_diseases %}
-        <table class="table table-striped">
-            <thead><tr><th>Date</th><th>Image</th><th>Disease</th><th>Confidence</th><th>Solution</th></tr></thead>
-            <tbody>
-            {% for item in all_diseases %}
-                <tr>
-                    <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td><img src="{{ url_for('uploaded_file', filename=item.image_filename) }}" width="60" height="60" style="object-fit:cover;border-radius:6px;"></td>
-                    <td>{{ item.disease_name }}</td>
-                    <td>{{ item.confidence }}%</td>
-                    <td>{{ item.solution }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="text-muted">No disease detection history found.</p>
-        {% endif %}
+<!-- Nav Tabs for Crop vs Disease -->
+<ul class="nav nav-pills mb-4 gap-2" id="historyTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="btn-agri-primary active" id="crops-tab" data-bs-toggle="pill" data-bs-target="#crops" type="button" role="tab" aria-selected="true">
+            <span>🌾</span> {{ t('history_crop_tab') }} ({{ all_crops|length }})
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="btn-agri-outline" id="diseases-tab" data-bs-toggle="pill" data-bs-target="#diseases" type="button" role="tab" aria-selected="false">
+            <span>🍃</span> {{ t('history_disease_tab') }} ({{ all_diseases|length }})
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="historyTabContent">
+    <!-- Crop History Tab -->
+    <div class="tab-pane fade show active" id="crops" role="tabpanel" aria-labelledby="crops-tab">
+        <div class="glass-panel p-4">
+            {% if all_crops %}
+            <div class="table-responsive">
+                <table class="agri-table">
+                    <thead>
+                        <tr>
+                            <th>{{ t('table_date') }}</th>
+                            <th>N</th>
+                            <th>P</th>
+                            <th>K</th>
+                            <th>Temp (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>pH</th>
+                            <th>Rain (mm)</th>
+                            <th>{{ t('table_crop') }}</th>
+                            <th>{{ t('table_confidence') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_crops %}
+                        <tr>
+                            <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else 'Recent' }}</td>
+                            <td>{{ item.inputs.N if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.P if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.K if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.temperature if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.humidity if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.ph if item.inputs else '--' }}</td>
+                            <td>{{ item.inputs.rainfall if item.inputs else '--' }}</td>
+                            <td>
+                                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">
+                                    {{ item.localized_crop or item.recommended_crop }}
+                                </span>
+                            </td>
+                            <td>{{ item.confidence or '99+' }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <p class="text-secondary mb-3">{{ t('no_crops_yet') }}</p>
+                <a href="{{ url_for('crop.predict_crop_route') }}" class="btn-agri-primary">
+                    <span>🌾</span> {{ t('btn_predict_crop') }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Disease History Tab -->
+    <div class="tab-pane fade" id="diseases" role="tabpanel" aria-labelledby="diseases-tab">
+        <div class="glass-panel p-4">
+            {% if all_diseases %}
+            <div class="table-responsive">
+                <table class="agri-table">
+                    <thead>
+                        <tr>
+                            <th>{{ t('table_date') }}</th>
+                            <th>{{ t('table_image') }}</th>
+                            <th>{{ t('table_disease') }}</th>
+                            <th>{{ t('table_confidence') }}</th>
+                            <th>{{ t('table_solution') }}</th>
+                            <th>Audio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_diseases %}
+                        <tr>
+                            <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else 'Recent' }}</td>
+                            <td>
+                                {% if item.image_filename %}
+                                <a href="{{ url_for('uploaded_file', filename=item.image_filename) }}" target="_blank">
+                                    <img src="{{ url_for('uploaded_file', filename=item.image_filename) }}" width="48" height="48" class="rounded-2 border border-secondary border-opacity-25" style="object-fit: cover;" alt="Leaf">
+                                </a>
+                                {% else %}
+                                🍃
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="fw-bold text-light">{{ item.localized_disease or item.disease_name }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {% if item.confidence and item.confidence|float >= 80 %}bg-success{% elif item.confidence and item.confidence|float >= 60 %}bg-warning text-dark{% else %}bg-danger{% endif %} bg-opacity-25 border border-opacity-25 px-2 py-1">
+                                    {{ item.confidence }}%
+                                </span>
+                            </td>
+                            <td style="max-width: 320px;">
+                                <p class="small text-secondary mb-0 text-truncate" title="{{ item.localized_solution }}">
+                                    {{ item.localized_solution }}
+                                </p>
+                            </td>
+                            <td>
+                                <button type="button" class="btn-audio py-1 px-2" style="font-size:0.75rem;" data-speak="{{ item.localized_disease }}. {{ item.localized_solution }}">
+                                    <span class="audio-icon">🔊</span>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <p class="text-secondary mb-3">{{ t('no_diseases_yet') }}</p>
+                <a href="{{ url_for('disease.predict_disease_route') }}" class="btn-agri-primary">
+                    <span>🍃</span> {{ t('btn_predict_disease') }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
